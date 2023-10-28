@@ -28,6 +28,9 @@ class MainViewModel : ViewModel() {
     val thisMovie = MutableStateFlow(MovieWithCast())
     val thisPerson = MutableStateFlow(Person())
     val thisTv = MutableStateFlow(TvWithCast())
+    val MoviesSearch = MutableStateFlow<List<Movie>>(listOf())
+    val TvsSearch = MutableStateFlow<List<Tv>>(listOf())
+    val PersonsSearch = MutableStateFlow<List<Person>>(listOf())
 
     init {
         getLastMovies()
@@ -69,6 +72,24 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch {
             thisTv.value = api.OneTv(id = id,"38c913fcb4a7397ddf7afa64761bb702")
 
+        }
+    }
+
+
+    fun getSearchMovie(query :String){
+        viewModelScope.launch {
+            MoviesSearch.value = api.SearchMovie(query = query, api_key = "38c913fcb4a7397ddf7afa64761bb702").results
+        Log.v("bornard", "rechercheGetViewModel :" + MoviesSearch.value.size + " et query = " + query)
+        }
+    }
+    fun getSearchTv(query :String){
+        viewModelScope.launch {
+            TvsSearch.value = api.SearchTv(query = query, api_key = "38c913fcb4a7397ddf7afa64761bb702").results
+        }
+    }
+    fun getSearchPerson(query :String){
+        viewModelScope.launch {
+            PersonsSearch.value = api.SearchPerson(query = query, api_key = "38c913fcb4a7397ddf7afa64761bb702").results
         }
     }
 }

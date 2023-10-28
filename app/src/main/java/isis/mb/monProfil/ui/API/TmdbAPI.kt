@@ -40,4 +40,29 @@ interface TmdbAPI {
         @Query("language") language: String = "fr-FR",
 
     ): Person
+
+    @GET("search/movie")
+    suspend fun SearchMovie(
+        @Query("api_key") api_key: String,
+        @Query("query") query: String,
+        @Query("language") language: String = "fr-FR",
+
+    ):Movies
+
+    @GET("search/tv")
+    suspend fun SearchTv(
+        @Query("api_key") api_key: String,
+        @Query("query") query: String,
+        @Query("language") language: String = "fr-FR",
+
+    ):Tvs
+
+    @GET("search/person")
+    suspend fun SearchPerson(
+        @Query("api_key") api_key: String,
+        @Query("query") query: String,
+        @Query("language") language: String = "fr-FR",
+
+    ):Persons
 }
+
