@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -108,50 +109,67 @@ fun MovieDetailsScreen(navController: NavController, filmid: String?) {
                     Text(text = it.name)
                 }
             }*/
-            item { Text(
-                text = "Distribution",
-                fontSize = 27.sp,
-                fontWeight = FontWeight.Bold,
-            )
+            item {
+                Text(
+                    text = "Distribution",
+                    fontSize = 27.sp,
+                    fontWeight = FontWeight.Bold,
+                )
             }
 
-            item{
+            item {
                 LazyHorizontalGrid(
                     rows = GridCells.Fixed(1),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(600.dp)
+                        .height(400.dp)
                         .padding(16.dp),
                 ) {
 
                     items(thisMovie.value.credits.cast) { actor ->
-                        Column {
+                        ElevatedCard(
+                            elevation = CardDefaults.cardElevation(
+                                defaultElevation = 6.dp
+                            ),
+                            modifier = Modifier
+                                .size(width = 200.dp, height = 350.dp)
+                                .padding(start = 8.dp, top = 38.dp, end = 8.dp, bottom = 0.dp)
+                                .fillMaxSize(),
+                        ) {
+                            Box(modifier =
+                            Modifier.fillMaxSize()
+                                .clickable { navController.navigate("ActorScreen/${actor.id}") })
+                            {
 
-                            AsyncImage(
-                                model = "https://image.tmdb.org/t/p/w500/" + actor.profile_path,
-                                contentDescription = "image du film",
-                                modifier = Modifier
-                                    .padding(16.dp, 50.dp, 0.dp, 0.dp)
-                                    .size(200.dp)
-                            )
-                            Text(
-                                text = actor.name,
-                                modifier = Modifier
-                                    .padding(16.dp)
-                                    .size(100.dp)
-                                    .clickable {  navController.navigate("ActorScreen/${actor.id}")},
-                                fontSize = 20.sp,
-                                textAlign = TextAlign.Center
+                                AsyncImage(
+                                    model = "https://image.tmdb.org/t/p/w500/" + actor.profile_path,
+                                    contentDescription = "image de la personne",
+                                    modifier = Modifier
+                                        .align(Alignment.TopCenter)
+                                        .size(200.dp)
+                                        .padding(start = 0.dp, top = 5.dp, end = 0.dp, bottom = 0.dp)
 
-                            )
+                                )
+                                Text(
+                                    text = actor.name,
+                                    modifier = Modifier
+                                        .padding(16.dp)
+                                        .align(Alignment.BottomCenter)
+                                        .size(100.dp),
+                                       // .clickable { navController.navigate("ActorScreen/${actor.id}") },
+                                    fontSize = 20.sp,
+                                    textAlign = TextAlign.Center
+
+                                )
+                            }
+
                         }
-
                     }
                 }
+
             }
 
+
         }
-
-
     }
 }

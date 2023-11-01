@@ -7,15 +7,18 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,11 +45,15 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarColors
 import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -274,34 +281,48 @@ fun ScaffoldHome( navController: NavController) {
 @Composable
 fun movieScreen (lastMovies: List<Movie>, innerPadding: PaddingValues, navController: NavController) {
 //Box(modifier = innerPadding)
-
-    LazyHorizontalGrid(
-        rows = GridCells.Fixed(1),
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
         modifier = Modifier
             .padding(innerPadding),
     ) {
 
         items(lastMovies) { film ->
             //  Log.v("bornard", "longueur :" + lastMovies.value.size)
-            Column {
+            ElevatedCard(
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 6.dp
+                ),
+                modifier = Modifier
+                    .size(width = 200.dp, height = 350.dp)
+                    .padding(start = 8.dp, top = 38.dp, end = 8.dp, bottom = 0.dp)
+                    .fillMaxSize(),
+            ) {
+                Box(modifier =
+                Modifier.fillMaxSize()
+                        .clickable { navController.navigate("movieScreen/${film.id}") })
+                {
+                    AsyncImage(
+                        model = "https://image.tmdb.org/t/p/w500/" + film.poster_path,
+                        contentDescription = "image du film",
+                        modifier = Modifier
+                            //.padding(16.dp, 50.dp, 0.dp, 0.dp)
+                            .align(Alignment.TopCenter)
+                            .size(200.dp)
+                            .padding(start = 0.dp, top = 5.dp, end = 0.dp, bottom = 0.dp)
+                    )
+                    Text(
+                        text = film.original_title,
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .align(Alignment.BottomCenter)
+                            .size(100.dp),
+                        //.clickable { navController.navigate("movieScreen/${film.id}") },
+                        fontSize = 20.sp,
+                        textAlign = TextAlign.Center
 
-                AsyncImage(
-                    model = "https://image.tmdb.org/t/p/w500/" + film.poster_path,
-                    contentDescription = "image du film",
-                    modifier = Modifier
-                        .padding(16.dp, 50.dp, 0.dp, 0.dp)
-                        .size(200.dp)
-                )
-                Text(
-                    text = film.original_title,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .size(100.dp)
-                        .clickable { navController.navigate("movieScreen/${film.id}") },
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Center
-
-                )
+                    )
+                }
             }
 
         }
@@ -314,72 +335,104 @@ fun movieScreen (lastMovies: List<Movie>, innerPadding: PaddingValues, navContro
 @Composable
 fun tvScreen (lastTvs: List<Tv>, innerPadding: PaddingValues, navController: NavController) {
 
-    LazyHorizontalGrid(
-        rows = GridCells.Fixed(1),
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
         modifier = Modifier
             .padding(innerPadding),
     ) {
 
         items(lastTvs) { tv ->
             //  Log.v("bornard", "longueur :" + lastTvs.value.size)
-            Column {
+            ElevatedCard(
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 6.dp
+                ),
+                modifier = Modifier
+                    .size(width = 200.dp, height = 350.dp)
+                    .padding(start = 8.dp, top = 38.dp, end = 8.dp, bottom = 0.dp)
+                    .fillMaxSize(),
+            ) {
+                Box(modifier =
+                Modifier.fillMaxSize()
+                    .clickable { navController.navigate("TvScreen/${tv.id}") })
+                {
 
-                AsyncImage(
-                    model = "https://image.tmdb.org/t/p/w500/" + tv.poster_path,
-                    contentDescription = "image du film",
-                    modifier = Modifier
-                        .padding(16.dp, 50.dp, 0.dp, 0.dp)
-                        .size(200.dp)
-                )
-                Text(
-                    text = tv.original_name,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .size(100.dp)
-                        .clickable { navController.navigate("TvScreen/${tv.id}") },
+                    AsyncImage(
+                        model = "https://image.tmdb.org/t/p/w500/" + tv.poster_path,
+                        contentDescription = "image du film",
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .size(200.dp)
+                            .padding(start = 0.dp, top = 5.dp, end = 0.dp, bottom = 0.dp)
+
+                    )
+                    Text(
+                        text = tv.original_name,
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .align(Alignment.BottomCenter)
+                            .size(100.dp),
+                        //.clickable { navController.navigate("TvScreen/${tv.id}") },
 
 
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Center
-                )
+                        fontSize = 20.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+
             }
 
-
         }
-
     }
 }
 
 @Composable
 fun ActorScreen (lastPersons: List<Person>, innerPadding: PaddingValues, navController: NavController) {
 
-    LazyHorizontalGrid(
-        rows = GridCells.Fixed(1),
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
         modifier = Modifier
             .padding(innerPadding),
     ) {
         //Log.v("bornard", "longueur :" + lastPersons.size)
 
         items(lastPersons) { person ->
-            Column {
+            ElevatedCard(
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 6.dp
+                ),
+                modifier = Modifier
+                    .size(width = 200.dp, height = 350.dp)
+                    .padding(start = 8.dp, top = 38.dp, end = 8.dp, bottom = 0.dp)
+                    .fillMaxSize(),
+            ) {
+                Box(modifier =
+                Modifier.fillMaxSize()
+                    .clickable { navController.navigate("ActorScreen/${person.id}") })
+                {
 
-                AsyncImage(
-                    model = "https://image.tmdb.org/t/p/w500/" + person.profile_path,
-                    contentDescription = "image du film",
-                    modifier = Modifier
-                        .padding(16.dp, 50.dp, 0.dp, 0.dp)
-                        .size(200.dp)
-                )
-                Text(
-                    text = person.name,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .size(100.dp)
-                        .clickable { navController.navigate("ActorScreen/${person.id}") },
+                    AsyncImage(
+                        model = "https://image.tmdb.org/t/p/w500/" + person.profile_path,
+                        contentDescription = "image du film",
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .size(200.dp)
+                            .padding(start = 0.dp, top = 5.dp, end = 0.dp, bottom = 0.dp)
 
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Center
-                )
+                    )
+                    Text(
+                        text = person.name,
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .align(Alignment.BottomCenter)
+                            .size(100.dp),
+                        //.clickable { navController.navigate("ActorScreen/${person.id}") },
+
+                        fontSize = 20.sp,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
     }
