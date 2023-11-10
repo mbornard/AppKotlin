@@ -35,19 +35,19 @@ class MainActivity : ComponentActivity() {
                             Screen(navController= navController, classes= windowSizeClass)
                         }
                         composable("Film") {
-                            Home(navController= navController)
+                            Home(navController= navController, windowSizeClass)
                         }
                         composable("movieScreen/{filmId}"){
                                 backStackEntry ->
-                            MovieDetailsScreen(navController= navController, backStackEntry.arguments?.getString("filmId"))
+                            MovieDetailsScreen(navController= navController, backStackEntry.arguments?.getString("filmId"), windowSizeClass)
                         }
                         composable("TvScreen/{TvId}"){
                                 backStackEntry ->
-                            TvDetailsScreen(navController= navController, backStackEntry.arguments?.getString("TvId"))
+                            TvDetailsScreen(navController= navController, backStackEntry.arguments?.getString("TvId"), windowSizeClass)
                         }
                         composable("ActorScreen/{PersonId}"){
                                 backStackEntry ->
-                            ActorDetailsScreen(navController= navController, backStackEntry.arguments?.getString("PersonId"))
+                            ActorDetailsScreen(navController= navController, backStackEntry.arguments?.getString("PersonId"), windowSizeClass)
                         }
                     }
 

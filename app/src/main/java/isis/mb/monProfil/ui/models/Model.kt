@@ -46,9 +46,31 @@ data class Person(
     val name: String = "",
     val place_of_birth: String = "",
     val popularity: Double = 0.0,
-    val profile_path: String = ""
+    val profile_path: String = "",
+    val credits: CreditsPerson = CreditsPerson()
 )
-
+data class CreditsPerson(
+    val cast: List<CastPerson> = listOf()
+)
+data class CastPerson(
+    val adult: Boolean = false,
+    val backdrop_path: String = "",
+    val character: String = "",
+    val credit_id: String = "",
+    val genre_ids: List<Int> = listOf(),
+    val id: Int = 0,
+    val order: Int = 0,
+    val original_language: String = "",
+    val original_title: String = "",
+    val overview: String = "",
+    val popularity: Double = 0.0,
+    val poster_path: String = "",
+    val release_date: String = "",
+    val title: String = "",
+    val video: Boolean = false,
+    val vote_average: Double = 0.0,
+    val vote_count: Int = 0
+)
 
 data class Tvs(
     val page: Int,
@@ -170,3 +192,6 @@ data class CastTV(
     val popularity: Double = 0.0,
     val profile_path: String = ""
 )
+
+
+

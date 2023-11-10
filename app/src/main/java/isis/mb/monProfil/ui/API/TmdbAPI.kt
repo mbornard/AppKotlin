@@ -7,13 +7,13 @@ import retrofit2.http.Query
 
 interface TmdbAPI {
     @GET("trending/movie/week")
-    suspend fun lastMovies(@Query("api_key") api_key: String): Movies
+    suspend fun lastMovies(@Query("api_key") api_key: String,  @Query("language") language: String = "fr-FR"): Movies
 
     @GET("trending/tv/week")
-    suspend fun lastTvs(@Query("api_key") api_key: String): Tvs
+    suspend fun lastTvs(@Query("api_key") api_key: String,  @Query("language") language: String = "fr-FR"): Tvs
 
     @GET("trending/person/week")
-    suspend fun lastPersons(@Query("api_key") api_key: String): Persons
+    suspend fun lastPersons(@Query("api_key") api_key: String,  @Query("language") language: String = "fr-FR"): Persons
 
     @GET("movie/{id}")
     suspend fun OneMovie(
@@ -38,6 +38,7 @@ interface TmdbAPI {
         @Path("id") id: Int,
         @Query("api_key") api_key: String,
         @Query("language") language: String = "fr-FR",
+        @Query("append_to_response") append_to_response: String = "credits"
 
     ): Person
 
@@ -65,4 +66,3 @@ interface TmdbAPI {
 
     ):Persons
 }
-

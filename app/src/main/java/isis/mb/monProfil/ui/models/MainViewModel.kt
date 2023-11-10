@@ -21,6 +21,7 @@ class MainViewModel : ViewModel() {
 
     val api = retrofit.create(TmdbAPI::class.java)
 
+    val api_key = "38c913fcb4a7397ddf7afa64761bb702"
 
     val LastMovies = MutableStateFlow<List<Movie>>(listOf())
     val LastTvs = MutableStateFlow<List<Tv>>(listOf())
@@ -40,37 +41,37 @@ class MainViewModel : ViewModel() {
 
     fun getLastMovies() {
         viewModelScope.launch {
-            LastMovies.value = api.lastMovies("38c913fcb4a7397ddf7afa64761bb702").results //permet d'acceder aux valeurs dans le film
+            LastMovies.value = api.lastMovies(api_key).results //permet d'acceder aux valeurs dans le film
             //Log.v("bornard", "longueur :" + LastMovies.value.size)
         }
     }
     fun getLastTvs() {
         viewModelScope.launch {
-            LastTvs.value = api.lastTvs("38c913fcb4a7397ddf7afa64761bb702").results //permet d'acceder aux valeurs dans le film
+            LastTvs.value = api.lastTvs(api_key).results //permet d'acceder aux valeurs dans le film
         }
     }
     fun getLastPersons(){
         viewModelScope.launch {
-            lastPersons.value = api.lastPersons("38c913fcb4a7397ddf7afa64761bb702").results
+            lastPersons.value = api.lastPersons(api_key).results
         }
     }
 
     fun getThisMovie(id :Int){
         viewModelScope.launch {
-            thisMovie.value = api.OneMovie(id = id,"38c913fcb4a7397ddf7afa64761bb702")
+            thisMovie.value = api.OneMovie(id = id,api_key)
 
         }
     }
 
     fun getThisPerson(id :Int){
         viewModelScope.launch {
-            thisPerson.value = api.OnePerson(id = id, "38c913fcb4a7397ddf7afa64761bb702")
+            thisPerson.value = api.OnePerson(id = id, api_key)
 
         }
     }
     fun getThisTv(id :Int){
         viewModelScope.launch {
-            thisTv.value = api.OneTv(id = id,"38c913fcb4a7397ddf7afa64761bb702")
+            thisTv.value = api.OneTv(id = id,api_key)
 
         }
     }
@@ -78,18 +79,18 @@ class MainViewModel : ViewModel() {
 
     fun getSearchMovie(query :String){
         viewModelScope.launch {
-            MoviesSearch.value = api.SearchMovie(query = query, api_key = "38c913fcb4a7397ddf7afa64761bb702").results
-        Log.v("bornard", "rechercheGetViewModel :" + MoviesSearch.value.size + " et query = " + query)
+            MoviesSearch.value = api.SearchMovie(query = query, api_key = api_key).results
+        //Log.v("bornard", "rechercheGetViewModel :" + MoviesSearch.value.size + " et query = " + query)
         }
     }
     fun getSearchTv(query :String){
         viewModelScope.launch {
-            TvsSearch.value = api.SearchTv(query = query, api_key = "38c913fcb4a7397ddf7afa64761bb702").results
+            TvsSearch.value = api.SearchTv(query = query, api_key = api_key).results
         }
     }
     fun getSearchPerson(query :String){
         viewModelScope.launch {
-            PersonsSearch.value = api.SearchPerson(query = query, api_key = "38c913fcb4a7397ddf7afa64761bb702").results
+            PersonsSearch.value = api.SearchPerson(query = query, api_key = api_key).results
         }
     }
 }
