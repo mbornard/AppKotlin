@@ -19,6 +19,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -81,7 +85,7 @@ fun ActorDetailsScreen(navController: NavController, personid: String?, classes:
 }
 @Composable
 fun displayImage(thisPerson: State<Person>, classes: WindowSizeClass){
-    //choix du modifier en fonctio  de la taille de l'écran
+    //Choose the modifier according to the window size
     var myModifier: Modifier
     if(classes.widthSizeClass != WindowWidthSizeClass.Compact){
         myModifier = Modifier
@@ -92,7 +96,7 @@ fun displayImage(thisPerson: State<Person>, classes: WindowSizeClass){
             .height(500.dp)
             .clip(RoundedCornerShape(16.dp))
     }
-    //Image de la personne
+    //Person's picture
     Image(
         painter = rememberImagePainter(data = "https://image.tmdb.org/t/p/w500/${thisPerson.value.profile_path}"),
         contentDescription = "image de la personne",
@@ -103,8 +107,9 @@ fun displayImage(thisPerson: State<Person>, classes: WindowSizeClass){
 
 @Composable
 fun displayInfo(thisPerson: State<Person>, navController: NavController){
+    var isExpanded by remember { mutableStateOf(false) }
 
-    // Nom de la personne
+    // Person's name
     Text(
         text = thisPerson.value.name,
         fontWeight = FontWeight.Bold,
@@ -112,7 +117,7 @@ fun displayInfo(thisPerson: State<Person>, navController: NavController){
         modifier = Modifier.padding(vertical = 8.dp)
     )
 
-    // Date de naissance
+    // Person's birthday
     Text(
         text = "Né.e le: ${thisPerson.value.birthday}",
         fontSize = 16.sp,
@@ -120,7 +125,7 @@ fun displayInfo(thisPerson: State<Person>, navController: NavController){
     )
 
     if (thisPerson.value.deathday != null) {
-        // Date de décès
+        // Person's deathday if it exist
         Text(
             text = "Décédé.e le: ${thisPerson.value.deathday}",
             fontSize = 16.sp,
@@ -129,24 +134,42 @@ fun displayInfo(thisPerson: State<Person>, navController: NavController){
     }
 
     // Bio
-    if(thisPerson.value.biography == ""){
+    if (thisPerson.value.biography.isBlank()) { // if no biography available
         Text(
             text = "Biographie : Aucune biographie disponible",
             fontSize = 16.sp,
             modifier = Modifier.padding(vertical = 8.dp)
-        )}else {
+        )
+    } else {
+        // if biography size is big, display the first line of the biography
+        val previewText = if (thisPerson.value.biography.lines().size > 1) {
+            thisPerson.value.biography.lines().take(1).joinToString("\n")
+        } else { //else display the original biography
+            thisPerson.value.biography
+        }
+
         Text(
-            text = "Biographie : ${thisPerson.value.biography}",
+            text = if (isExpanded) thisPerson.value.biography else previewText,
             fontSize = 16.sp,
             modifier = Modifier.padding(vertical = 8.dp)
         )
+
+        // button "Voir plus" to display the entire biography or "voir moins" to reduce the size of the biography
+        if (thisPerson.value.biography.lines().size > 1) {
+            TextButton(
+                onClick = { isExpanded = !isExpanded },
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Text(if (isExpanded) "Voir moins" else "Voir plus")
+            }
+        }
     }
     Text(
         text = "Filmographie :",
         fontSize = 27.sp,
         fontWeight = FontWeight.Bold,
     )
-
+    // display the list of the movies done by this person
     LazyHorizontalGrid(rows = GridCells.Fixed(1), modifier = Modifier.fillMaxWidth().height(400.dp).padding(16.dp)){
         items(thisPerson.value.credits.cast){ movie ->
             ElevatedCard(

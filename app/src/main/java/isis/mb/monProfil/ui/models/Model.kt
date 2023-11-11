@@ -1,5 +1,7 @@
 package isis.mb.monProfil.ui.models
 
+import java.math.BigInteger
+
 data class Movies(
     val page: Int,
     val results: List<Movie>,
@@ -109,7 +111,6 @@ data class MovieWithCast(
     val popularity: Double = 0.0,
     val poster_path: String = "",
     val release_date: String = "",
-    val revenue: Int = 0,
     val runtime: Int = 0,
     val status: String = "",
     val tagline: String = "",
