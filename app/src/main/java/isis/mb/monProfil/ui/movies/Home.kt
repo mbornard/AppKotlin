@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.absolutePadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -91,24 +92,26 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScaffoldHome( navController: NavController, classes: WindowSizeClass) {
-    val viewmodel: MainViewModel = viewModel() //atention pas création mais injection
+    val viewmodel: MainViewModel = viewModel() // get the view model   NB : pas création mais injection
     var presses by remember { mutableStateOf(0) }
-    var queryString by remember { mutableStateOf("") }
+    var queryString by remember { mutableStateOf("") } // the string entered by the user in the search bar
 
-
+    // Launch the function to search for movies, tv and person according to the query string
     LaunchedEffect(true){ viewmodel.getSearchMovie(queryString) }
     LaunchedEffect(true){viewmodel.getSearchTv(queryString) }
     LaunchedEffect(true){viewmodel.getSearchPerson(queryString) }
 
+    // get the list of movies, tv and person according to the search
     var searchMovies = viewmodel.MoviesSearch.collectAsState()
     var searchPerson = viewmodel.PersonsSearch.collectAsState()
     var searchTV = viewmodel.TvsSearch.collectAsState()
 
+    // get the list of trending movies, tv and person
     var lastMovies = viewmodel.LastMovies.collectAsState()
     var lastTvs = viewmodel.LastTvs.collectAsState()
     var lastPersons = viewmodel.lastPersons.collectAsState()
 
-
+    // boolean to know which screen is selected
     var movieScreenSelected by remember { mutableStateOf(true) }
     var tvScreenSelected by remember { mutableStateOf(false) }
     var actorScreenSelected by remember { mutableStateOf(false) }
@@ -124,7 +127,7 @@ fun ScaffoldHome( navController: NavController, classes: WindowSizeClass) {
     }
 
     //val contextForToast = LocalContext.current.applicationContext
-    var isSearchBarActive by remember { mutableStateOf(false) }
+    var isSearchBarActive by remember { mutableStateOf(false) } // boolean called to display the search bar or not
     if(classes.widthSizeClass  != WindowWidthSizeClass.Compact){
     Row {
         //The left navigation bar
@@ -179,168 +182,69 @@ fun ScaffoldHome( navController: NavController, classes: WindowSizeClass) {
 
 
 
+        Box {
 
-        LazyHorizontalGrid(
-            rows = GridCells.Fixed(1),
-            modifier = Modifier.padding(16.dp),
-        ) {
 
-            //select the screen according to the navigation item selected
-            if (movieScreenSelected) {
-                items(lastMovies.value) { film ->
-                    MovieDisplay(navController = navController, film = film, classes)
+            LazyHorizontalGrid(
+                rows = GridCells.Fixed(1),
+                modifier = Modifier.padding(16.dp),
+            ) {
+
+                //select the screen according to the navigation item selected
+                if (movieScreenSelected) {
+                    items(lastMovies.value) { film ->
+                        MovieDisplay(navController = navController, film = film, classes)
+                    }
                 }
-            }
-            if (tvScreenSelected) {
-                items(lastTvs.value) { tv ->
-                    TvDisplay(navController = navController, tv = tv, classes)
+                if (tvScreenSelected) {
+                    items(lastTvs.value) { tv ->
+                        TvDisplay(navController = navController, tv = tv, classes)
+                    }
                 }
-            }
-            if (actorScreenSelected) {
-                items(lastPersons.value) { person ->
-                    PersonDisplay(navController = navController, person = person, classes)
+                if (actorScreenSelected) {
+                    items(lastPersons.value) { person ->
+                        PersonDisplay(navController = navController, person = person, classes)
+                    }
                 }
-            }
-            if (movieSearchSelected) {
-                items(searchMovies.value) { film ->
-                    MovieDisplay(navController = navController, film = film, classes)
+                if (movieSearchSelected) {
+                    items(searchMovies.value) { film ->
+                        MovieDisplay(navController = navController, film = film, classes)
+                    }
                 }
-            }
-            if (tvSearchSelected) {
-                items(searchTV.value) { tv ->
-                    TvDisplay(navController = navController, tv = tv, classes)
+                if (tvSearchSelected) {
+                    items(searchTV.value) { tv ->
+                        TvDisplay(navController = navController, tv = tv, classes)
+                    }
                 }
+                if (personSearchSelected) {
+                    items(searchPerson.value) { person ->
+                        PersonDisplay(navController = navController, person = person, classes)
+                    }
+                }
+
             }
-            if (personSearchSelected) {
-                items(searchPerson.value) { person ->
-                    PersonDisplay(navController = navController, person = person, classes)
+            // if the search bar is not active and the screen is not compact, display the floating action button in the bottom right corner
+            if (!isSearchBarActive && classes.widthSizeClass != WindowWidthSizeClass.Compact) {
+                FloatingActionButton(
+                    onClick = { isSearchBarActive = true },
+                    modifier = Modifier
+                        .padding(16.dp) // Ajustez la marge selon vos besoins
+                        .align(Alignment.BottomEnd)
+                ) {
+                    Icon(Icons.Default.Search, contentDescription = "Search")
                 }
             }
 
         }
-
 
 
     }
-        if (isSearchBarActive) {
-            SearchBar(
-                modifier = Modifier.fillMaxWidth(),
-                query = queryString,
-                onQueryChange = { newQueryString ->
-                    // this is called every time the user enters a new character
-                    queryString = newQueryString
-                },
-                onSearch = {
-                    // this is called when the user taps on the Search icon on the keyboard
-                    isActive = false
-                    //Toast.makeText(contextForToast, "Your query string: $queryString", Toast.LENGTH_SHORT).show()
-                    if (movieScreenSelected) {
-                        viewmodel.getSearchMovie(queryString)
-                        movieScreenSelected = false
-                        movieSearchSelected = true
-                        isSearchBarActive = false
-                        queryString = ""
-                        //Log.v("bornard", "recherche :" + searchMovies.value.size)
-                    }
-                    if (tvScreenSelected) {
-                        viewmodel.getSearchTv(queryString)
-                        tvScreenSelected = false
-                        tvSearchSelected = true
-                        isSearchBarActive = false
-                        queryString = ""
-                    }
-                    if (actorScreenSelected) {
-                        viewmodel.getSearchPerson(queryString)
-                        actorScreenSelected = false
-                        personSearchSelected = true
-                        isSearchBarActive = false
-                        queryString = ""
-                    }
-
-
-                },
-                active = isActive,
-                onActiveChange = { activeChange ->
-                    isActive = activeChange
-                },
-                placeholder = {
-                    Text(text = "Search")
-                },
-                leadingIcon = {
-                    Icon(imageVector = Icons.Default.Search, contentDescription = null)
-                }
-            ) {
-
-            }
-        }else{
-            FloatingActionButton(
-                onClick = { isSearchBarActive = true },
-                modifier = Modifier
-                    //.align(Alignment.BottomEnd)
-                    .padding(16.dp) // Ajustez la marge selon vos besoins
-            ) {
-                Icon(Icons.Default.Search, contentDescription = "Search")
-            }
-
-        }
 
 }else {
     Scaffold(
         topBar = {
-            if (isSearchBarActive) {
-                SearchBar(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        //.padding(horizontal = if (isActive) 0.dp else 8.dp)
-                        .background(MaterialTheme.colorScheme.primaryContainer),
-                    query = queryString,
-                    onQueryChange = { newQueryString ->
-                        // this is called every time the user enters a new character
-                        queryString = newQueryString
-                    },
-                    onSearch = {
-                        // this is called when the user taps on the Search icon on the keyboard
-                        isActive = false
-                        //Toast.makeText(contextForToast, "Your query string: $queryString", Toast.LENGTH_SHORT).show()
-                        if (movieScreenSelected) {
-                            viewmodel.getSearchMovie(queryString)
-                            movieScreenSelected = false
-                            movieSearchSelected = true
-                            isSearchBarActive = false
-                            queryString = ""
-                            //Log.v("bornard", "recherche :" + searchMovies.value.size)
-                        }
-                        if (tvScreenSelected) {
-                            viewmodel.getSearchTv(queryString)
-                            tvScreenSelected = false
-                            tvSearchSelected = true
-                            isSearchBarActive = false
-                            queryString = ""
-                        }
-                        if (actorScreenSelected) {
-                            viewmodel.getSearchPerson(queryString)
-                            actorScreenSelected = false
-                            personSearchSelected = true
-                            isSearchBarActive = false
-                            queryString = ""
-                        }
+            if (!isSearchBarActive) { // if the search bar is not active, display the top app bar
 
-
-                    },
-                    active = isActive,
-                    onActiveChange = { activeChange ->
-                        isActive = activeChange
-                    },
-                    placeholder = {
-                        Text(text = "Search")
-                    },
-                    leadingIcon = {
-                        Icon(imageVector = Icons.Default.Search, contentDescription = null)
-                    }
-                ) {
-
-                }
-            } else {
                 CenterAlignedTopAppBar(
                     colors = topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -356,7 +260,7 @@ fun ScaffoldHome( navController: NavController, classes: WindowSizeClass) {
                             modifier = Modifier
                                 .padding(16.dp)
                                 .clickable {
-                                    isSearchBarActive = true
+                                    isSearchBarActive = true // if the user click on the search icon, the search bar is active
                                 }
 
                         )
@@ -424,12 +328,9 @@ fun ScaffoldHome( navController: NavController, classes: WindowSizeClass) {
 
         },
         /*
-        floatingActionButton = {
-            FloatingActionButton(onClick = { presses++ }) {
-                Icon(Icons.Default.Add, contentDescription = "Add")
-            }
+        floatingActionButton = {}
         }*/
-    ) { innerPadding ->
+    ) { innerPadding -> // display the list of TV, movie or person according to the boolean selected by the user in the bottom nav bar
         if (movieScreenSelected) {
             Text(
                 text = "Les films en tendances",
@@ -487,9 +388,62 @@ fun ScaffoldHome( navController: NavController, classes: WindowSizeClass) {
 
     }
 }
+    if(isSearchBarActive) {
+    //if the boolean is true, display the search bar
+        SearchBar(
+            modifier =  if (classes.widthSizeClass != WindowWidthSizeClass.Compact)  Modifier.fillMaxWidth()
+            else Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.primaryContainer).padding(8.dp),
+            query = queryString,
+            onQueryChange = { newQueryString ->
+                // this is called every time the user enters a new character
+                queryString = newQueryString
+            },
+            onSearch = {
+                // this is called when the user taps on the Search icon on the keyboard
+                isActive = false
+                //Toast.makeText(contextForToast, "Your query string: $queryString", Toast.LENGTH_SHORT).show()
+                if (movieScreenSelected) { //if the user is on the movie screen, search for movies
+                    viewmodel.getSearchMovie(queryString)
+                    movieScreenSelected = false
+                    movieSearchSelected = true
+                    isSearchBarActive = false
+                    queryString = ""
+                    //Log.v("bornard", "recherche :" + searchMovies.value.size)
+                }
+                if (tvScreenSelected) { //if the user is on the tv screen, search for tv
+                    viewmodel.getSearchTv(queryString)
+                    tvScreenSelected = false
+                    tvSearchSelected = true
+                    isSearchBarActive = false
+                    queryString = ""
+                }
+                if (actorScreenSelected) { // if the user is on the actor screen, search for actors
+                    viewmodel.getSearchPerson(queryString)
+                    actorScreenSelected = false
+                    personSearchSelected = true
+                    isSearchBarActive = false
+                    queryString = ""
+                }
+
+
+            },
+            active = isActive,
+            onActiveChange = { activeChange ->
+                isActive = activeChange
+            },
+            placeholder = {
+                Text(text = "Search")
+            },
+            leadingIcon = {
+                Icon(imageVector = Icons.Default.Search, contentDescription = null)
+            }
+        ) {
+
+        }
+    }
 }
 
-@Composable
+@Composable //function to display the list of trending movies in the home
 fun movieScreen (lastMovies: List<Movie>, innerPadding: PaddingValues, navController: NavController, classes: WindowSizeClass) {
 //Box(modifier = innerPadding)
 
@@ -522,7 +476,7 @@ fun movieScreen (lastMovies: List<Movie>, innerPadding: PaddingValues, navContro
 
 }
 
-@Composable
+@Composable //function to display the card of trending tv in the home screen
 fun tvScreen (lastTvs: List<Tv>, innerPadding: PaddingValues, navController: NavController, classes: WindowSizeClass) {
 
     LazyVerticalGrid(
@@ -539,7 +493,7 @@ fun tvScreen (lastTvs: List<Tv>, innerPadding: PaddingValues, navController: Nav
     }
 }
 
-@Composable
+@Composable //function to display the list of trending people in the home
 fun ActorScreen (lastPersons: List<Person>, innerPadding: PaddingValues, navController: NavController, classes: WindowSizeClass) {
 
     LazyVerticalGrid(
@@ -556,7 +510,7 @@ fun ActorScreen (lastPersons: List<Person>, innerPadding: PaddingValues, navCont
     }
 }
 
-@Composable
+@Composable //function to display the card of the movie in the home screen
 fun MovieDisplay(navController: NavController, film: Movie, classes: WindowSizeClass){
     var myPaddingTop = if(classes.widthSizeClass  != WindowWidthSizeClass.Compact)  0.dp else 38.dp
 
@@ -607,7 +561,7 @@ fun MovieDisplay(navController: NavController, film: Movie, classes: WindowSizeC
     }
 }
 
-@Composable
+@Composable //function to display the card of the tv in the home screen
 fun TvDisplay(navController: NavController, tv: Tv, classes: WindowSizeClass){
     var myPaddingTop = if(classes.widthSizeClass  != WindowWidthSizeClass.Compact)  0.dp else 38.dp
 
@@ -657,7 +611,8 @@ fun TvDisplay(navController: NavController, tv: Tv, classes: WindowSizeClass){
     }
 }
 
-@Composable
+
+@Composable //function to display the card of the people in the home screen
 fun PersonDisplay(navController: NavController, person : Person, classes: WindowSizeClass){
     var myPaddingTop = if(classes.widthSizeClass  != WindowWidthSizeClass.Compact)  0.dp else 38.dp
 
@@ -696,6 +651,8 @@ fun PersonDisplay(navController: NavController, person : Person, classes: Window
         }
     }
 }
+
+//function to format the date
 fun formatDate(
     inputDate: String,
     inputDateFormat: String,
