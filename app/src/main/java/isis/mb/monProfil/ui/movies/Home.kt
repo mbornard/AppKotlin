@@ -62,6 +62,7 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
@@ -131,14 +132,17 @@ fun ScaffoldHome( navController: NavController, classes: WindowSizeClass) {
     if(classes.widthSizeClass  != WindowWidthSizeClass.Compact){
     Row {
         //The left navigation bar
-        Column (horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceEvenly) {
+        Column (horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceEvenly,
+            modifier= Modifier.background( Color(224 , 169 , 109) ).fillMaxHeight()
+        ) {
             Box(modifier = Modifier
                 .clickable {
                     movieScreenSelected = true; tvScreenSelected =
                     false; actorScreenSelected = false; tvSearchSelected =
                     false; personSearchSelected = false; movieSearchSelected = false
                 }
-                .padding(0.dp, 50.dp, 0.dp, 25.dp)){
+                .padding(0.dp, 25.dp, 5.dp, 25.dp)){
                 Column (horizontalAlignment = Alignment.CenterHorizontally) {
                     Image(
                         painterResource(R.drawable.movie),
@@ -154,7 +158,7 @@ fun ScaffoldHome( navController: NavController, classes: WindowSizeClass) {
                     true; actorScreenSelected = false; movieSearchSelected =
                     false; tvSearchSelected = false; personSearchSelected = false
                 }
-                .padding(0.dp, 25.dp, 0.dp, 25.dp)){
+                .padding(0.dp, 25.dp, 5.dp, 25.dp)){
                 Column (horizontalAlignment = Alignment.CenterHorizontally){
                     Image(
                         painterResource(R.drawable.tv),
@@ -169,7 +173,7 @@ fun ScaffoldHome( navController: NavController, classes: WindowSizeClass) {
                     false; actorScreenSelected = true; movieSearchSelected =
                     false; tvSearchSelected = false; personSearchSelected = false
                 }
-                .padding(0.dp, 25.dp, 0.dp, 25.dp)){
+                .padding(0.dp, 25.dp, 5.dp, 25.dp)){
                 Column (horizontalAlignment = Alignment.CenterHorizontally){
                     Image(
                         painterResource(R.drawable.person),
@@ -182,12 +186,13 @@ fun ScaffoldHome( navController: NavController, classes: WindowSizeClass) {
 
 
 
-        Box {
+        Box (modifier = Modifier.background(Color(221 , 195 , 165)).fillMaxSize()){
 
 
             LazyHorizontalGrid(
                 rows = GridCells.Fixed(1),
                 modifier = Modifier.padding(16.dp),
+
             ) {
 
                 //select the screen according to the navigation item selected
@@ -246,9 +251,12 @@ fun ScaffoldHome( navController: NavController, classes: WindowSizeClass) {
             if (!isSearchBarActive) { // if the search bar is not active, display the top app bar
 
                 CenterAlignedTopAppBar(
-                    colors = topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        titleContentColor = MaterialTheme.colorScheme.primary,
+                    colors = topAppBarColors( // Color(48, 49, 52)
+                        //containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        //titleContentColor = MaterialTheme.colorScheme.primary,
+                        containerColor =Color(224 , 169 , 109),
+
+                        titleContentColor = Color.White,
                     ),
                     title = {
                         Text("CinéMatisse")
@@ -264,8 +272,8 @@ fun ScaffoldHome( navController: NavController, classes: WindowSizeClass) {
                                 }
 
                         )
-                    }
-
+                    },
+                    modifier = Modifier.shadow(8.dp)
                 )
             }
 
@@ -275,7 +283,8 @@ fun ScaffoldHome( navController: NavController, classes: WindowSizeClass) {
         bottomBar = {
             var selectedItem by remember { mutableStateOf(0) }
 
-            BottomNavigation(backgroundColor = MaterialTheme.colorScheme.primaryContainer) {
+            BottomNavigation(backgroundColor = Color(224 , 169 , 109), modifier = Modifier.shadow(8.dp))
+            {
                 BottomNavigationItem(
                     icon = {
                         Image(
@@ -391,8 +400,8 @@ fun ScaffoldHome( navController: NavController, classes: WindowSizeClass) {
     if(isSearchBarActive) {
     //if the boolean is true, display the search bar
         SearchBar(
-            modifier =  if (classes.widthSizeClass != WindowWidthSizeClass.Compact)  Modifier.fillMaxWidth()
-            else Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.primaryContainer).padding(8.dp),
+            modifier =  if (classes.widthSizeClass != WindowWidthSizeClass.Compact)  Modifier.fillMaxWidth() //we choose the modifier according to the screen size
+            else Modifier.fillMaxWidth().background(Color(224 , 169 , 109)).padding(8.dp),
             query = queryString,
             onQueryChange = { newQueryString ->
                 // this is called every time the user enters a new character
@@ -452,7 +461,8 @@ fun movieScreen (lastMovies: List<Movie>, innerPadding: PaddingValues, navContro
                 columns = GridCells.Fixed(2),
                 modifier = Modifier
                     .padding(innerPadding)
-                    //.background(color = Color(245, 232, 218)),
+                    .background(Color(221 , 195 , 165))
+                    .fillMaxSize(),
             ) {
 
                 items(lastMovies) { film ->
@@ -482,8 +492,11 @@ fun tvScreen (lastTvs: List<Tv>, innerPadding: PaddingValues, navController: Nav
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier
-            .padding(innerPadding),
-    ) {
+            .padding(innerPadding)
+            .background(Color(221 , 195 , 165))
+            .fillMaxSize(),
+
+        ) {
 
         items(lastTvs) { tv ->
             //  Log.v("bornard", "longueur :" + lastTvs.value.size)
@@ -499,7 +512,10 @@ fun ActorScreen (lastPersons: List<Person>, innerPadding: PaddingValues, navCont
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier
-            .padding(innerPadding),
+            .padding(innerPadding)
+            .background(Color(221 , 195 , 165))
+            .fillMaxSize(),
+
     ) {
         //Log.v("bornard", "longueur :" + lastPersons.size)
 
@@ -521,12 +537,14 @@ fun MovieDisplay(navController: NavController, film: Movie, classes: WindowSizeC
         modifier = Modifier
             .size(width = 200.dp, height = 350.dp)
             .padding(start = 8.dp, top = myPaddingTop, end = 8.dp, bottom = 0.dp)
-            .fillMaxSize(),
+            .fillMaxSize()
     ) {
         Box(modifier =
         Modifier
             .fillMaxSize()
-            .clickable { navController.navigate("movieScreen/${film.id}") })
+            .clickable { navController.navigate("movieScreen/${film.id}") }
+            .background(color =  Color(32 , 30 , 32)),
+        )
         {
             Column (horizontalAlignment = Alignment.CenterHorizontally){
                 AsyncImage(
@@ -544,6 +562,7 @@ fun MovieDisplay(navController: NavController, film: Movie, classes: WindowSizeC
                         .padding(0.dp, 10.dp, 0.dp, 0.dp) ,
                     textAlign = TextAlign.Center,
                     fontSize = 20.sp,
+                    color = Color(221 , 195 , 165)
                     //.align(Alignment.Center),
                     //.size(200.dp),
                     //.clickable { navController.navigate("movieScreen/${film.id}") },
@@ -554,7 +573,7 @@ fun MovieDisplay(navController: NavController, film: Movie, classes: WindowSizeC
                     "yyyy-MM-dd",
                     "dd MMM yyyy",
                     Locale.FRANCE
-                ), modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp), textAlign = TextAlign.Center, fontSize = 12.sp)
+                ), modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp), textAlign = TextAlign.Center, fontSize = 12.sp, color= Color(221 , 195 , 165))
             }
 
         }
@@ -577,7 +596,9 @@ fun TvDisplay(navController: NavController, tv: Tv, classes: WindowSizeClass){
         Box(modifier =
         Modifier
             .fillMaxSize()
-            .clickable { navController.navigate("TvScreen/${tv.id}") })
+            .clickable { navController.navigate("TvScreen/${tv.id}") }
+            .background(color =  Color(32 , 30 , 32)),
+        )
         {
             Column (horizontalAlignment = Alignment.CenterHorizontally) {
 
@@ -595,14 +616,17 @@ fun TvDisplay(navController: NavController, tv: Tv, classes: WindowSizeClass){
                         .padding(0.dp, 10.dp, 0.dp, 0.dp) ,
                     //.clickable { navController.navigate("TvScreen/${tv.id}") },
                     fontSize = 20.sp,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = Color(221 , 195 , 165)
+
                 )
                 Text(text =  formatDate(
                     tv.first_air_date,
                     "yyyy-MM-dd",
                     "dd MMM yyyy",
                     Locale.FRANCE
-                ), modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp), textAlign = TextAlign.Center, fontSize = 12.sp)
+                ), modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp), textAlign = TextAlign.Center, fontSize = 12.sp, color = Color(221 , 195 , 165))
+
 
             }
         }
@@ -628,7 +652,9 @@ fun PersonDisplay(navController: NavController, person : Person, classes: Window
         Box(modifier =
         Modifier
             .fillMaxSize()
-            .clickable { navController.navigate("ActorScreen/${person.id}") })
+            .clickable { navController.navigate("ActorScreen/${person.id}") }
+            .background(color =  Color(32 , 30 , 32))
+        )
         {
             Column (horizontalAlignment = Alignment.CenterHorizontally) {
 
@@ -645,7 +671,9 @@ fun PersonDisplay(navController: NavController, person : Person, classes: Window
                     modifier = Modifier
                         .padding(0.dp, 10.dp, 0.dp, 0.dp) ,
                     fontSize = 20.sp,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = Color(221 , 195 , 165)
+
                 )
             }
         }

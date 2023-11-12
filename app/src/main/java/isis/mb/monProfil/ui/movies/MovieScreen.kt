@@ -2,6 +2,7 @@ package isis.mb.monProfil.ui.movies
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,6 +22,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -51,7 +53,7 @@ fun MovieDetailsScreen(navController: NavController, filmid: String?, classes: W
     //Text(text = "le numero du film est " +filmid)
 
     if (classes.widthSizeClass != WindowWidthSizeClass.Compact) {
-        Row {
+        Row (modifier = Modifier.background(Color(221 , 195 , 165))){
             displayImage(thisMovie, classes)
             Column(
                 modifier = Modifier
@@ -64,15 +66,20 @@ fun MovieDetailsScreen(navController: NavController, filmid: String?, classes: W
             }
         }
     } else {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState())
+        Box(
+            modifier = Modifier.background(Color(221, 195, 165))
+        ) {// a box is used to have a background color
 
-        ) {
-            displayImage(thisMovie, classes)
-            displayInfo(thisMovie, navController)
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState())
+
+            ) {
+                displayImage(thisMovie, classes)
+                displayInfo(thisMovie, navController)
+            }
         }
     }
 
@@ -171,7 +178,9 @@ fun displayInfo(thisMovie: State<MovieWithCast>, navController: NavController){
                 Box(modifier =
                 Modifier
                     .fillMaxSize()
-                    .clickable { navController.navigate("ActorScreen/${actor.id}") })
+                    .clickable { navController.navigate("ActorScreen/${actor.id}") }
+                    .background(color = Color(32, 30, 32))
+                )
                 {
                     Column (horizontalAlignment = Alignment.CenterHorizontally) {
 
@@ -188,10 +197,13 @@ fun displayInfo(thisMovie: State<MovieWithCast>, navController: NavController){
                             modifier = Modifier
                                 .padding(0.dp, 10.dp, 0.dp, 0.dp) ,
                               fontSize = 20.sp,
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
+                            color = Color(221 , 195 , 165)
+
 
                         )
-                        Text(text = actor.character, fontSize = 16.sp, textAlign = TextAlign.Center, modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp))
+                        Text(text = actor.character, fontSize = 16.sp, textAlign = TextAlign.Center, modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp),                             color = Color(221 , 195 , 165)
+                        )
                     }
                 }
 

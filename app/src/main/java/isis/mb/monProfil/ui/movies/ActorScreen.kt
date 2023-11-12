@@ -3,6 +3,7 @@ package isis.mb.monProfil.ui.movies
 import android.annotation.SuppressLint
 import android.media.Image
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -55,7 +57,7 @@ fun ActorDetailsScreen(navController: NavController, personid: String?, classes:
 
 
     if (classes.widthSizeClass != WindowWidthSizeClass.Compact) {
-        Row {
+        Row (modifier = Modifier.background(Color(221 , 195 , 165))){
             displayImage(thisPerson, classes)
             Column(
                 modifier = Modifier
@@ -68,15 +70,18 @@ fun ActorDetailsScreen(navController: NavController, personid: String?, classes:
             }
         }
     } else {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            displayImage(thisPerson, classes)
-            displayInfo(thisPerson,  navController)
+        Box(modifier = Modifier.background(Color(221, 195, 165))) {// a box is used to have a background color
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState())
 
+            ) {
+                displayImage(thisPerson, classes)
+                displayInfo(thisPerson, navController)
+
+            }
         }
 
     }
@@ -118,11 +123,13 @@ fun displayInfo(thisPerson: State<Person>, navController: NavController){
     )
 
     // Person's birthday
-    Text(
-        text = "Né.e le: ${thisPerson.value.birthday}",
-        fontSize = 16.sp,
-        modifier = Modifier.padding(vertical = 8.dp)
-    )
+    if (thisPerson.value.birthday != null) {
+        Text(
+            text = "Né.e le: ${thisPerson.value.birthday}",
+            fontSize = 16.sp,
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
+    }
 
     if (thisPerson.value.deathday != null) {
         // Person's deathday if it exist
@@ -170,7 +177,10 @@ fun displayInfo(thisPerson: State<Person>, navController: NavController){
         fontWeight = FontWeight.Bold,
     )
     // display the list of the movies done by this person
-    LazyHorizontalGrid(rows = GridCells.Fixed(1), modifier = Modifier.fillMaxWidth().height(400.dp).padding(16.dp)){
+    LazyHorizontalGrid(rows = GridCells.Fixed(1), modifier = Modifier
+        .fillMaxWidth()
+        .height(400.dp)
+        .padding(16.dp)){
         items(thisPerson.value.credits.cast){ movie ->
             ElevatedCard(
                 elevation = CardDefaults.cardElevation(
@@ -184,7 +194,9 @@ fun displayInfo(thisPerson: State<Person>, navController: NavController){
                 Box(modifier =
                 Modifier
                     .fillMaxSize()
-                    .clickable { navController.navigate("MovieScreen/${movie.id}") })
+                    .clickable { navController.navigate("MovieScreen/${movie.id}") }
+                    .background(color = Color(32, 30, 32))
+                    )
                 {
                     Column (horizontalAlignment = Alignment.CenterHorizontally) {
 
@@ -206,6 +218,8 @@ fun displayInfo(thisPerson: State<Person>, navController: NavController){
                             text = "${movie.original_title}",
                             fontSize = 20.sp,
                             modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp) ,
+                            color = Color(221 , 195 , 165)
+
                         )
                     }
                 }
