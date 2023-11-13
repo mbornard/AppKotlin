@@ -456,7 +456,7 @@ fun ScaffoldHome( navController: NavController, classes: WindowSizeClass) {
 fun movieScreen (lastMovies: List<Movie>, innerPadding: PaddingValues, navController: NavController, classes: WindowSizeClass) {
 //Box(modifier = innerPadding)
 
-        if(classes.widthSizeClass  == WindowWidthSizeClass.Compact) {
+        //if(classes.widthSizeClass  == WindowWidthSizeClass.Compact) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 modifier = Modifier
@@ -470,7 +470,7 @@ fun movieScreen (lastMovies: List<Movie>, innerPadding: PaddingValues, navContro
                     MovieDisplay(navController = navController, film = film, classes)
                 }
             }
-        }else {
+       /* }else {
             LazyHorizontalGrid(
                 rows = GridCells.Fixed(1),
                 modifier = Modifier
@@ -481,7 +481,7 @@ fun movieScreen (lastMovies: List<Movie>, innerPadding: PaddingValues, navContro
                     MovieDisplay(navController = navController, film = film, classes)
                 }
             }
-        }
+        }*/
 
 
 }
@@ -546,7 +546,7 @@ fun MovieDisplay(navController: NavController, film: Movie, classes: WindowSizeC
             .background(color =  Color(32 , 30 , 32)),
         )
         {
-            Column (horizontalAlignment = Alignment.CenterHorizontally){
+            Column (horizontalAlignment = Alignment.CenterHorizontally) {
                 AsyncImage(
                     model = "https://image.tmdb.org/t/p/w500/" + film.poster_path,
                     contentDescription = "image du film",
@@ -559,21 +559,29 @@ fun MovieDisplay(navController: NavController, film: Movie, classes: WindowSizeC
                 Text(
                     text = film.original_title,
                     modifier = Modifier
-                        .padding(0.dp, 10.dp, 0.dp, 0.dp) ,
+                        .padding(0.dp, 10.dp, 0.dp, 0.dp),
                     textAlign = TextAlign.Center,
-                    fontSize = 20.sp,
-                    color = Color(221 , 195 , 165)
+                    fontSize = if (film.original_title.length< 20 ) 20.sp else 16.sp, //if the title is too long, reduce the size of the text
+                    color = Color(221, 195, 165)
                     //.align(Alignment.Center),
                     //.size(200.dp),
                     //.clickable { navController.navigate("movieScreen/${film.id}") },
 
                 )
-                Text(text =  formatDate(
-                    film.release_date,
-                    "yyyy-MM-dd",
-                    "dd MMM yyyy",
-                    Locale.FRANCE
-                ), modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp), textAlign = TextAlign.Center, fontSize = 12.sp, color= Color(221 , 195 , 165))
+                if (film.release_date.isNotBlank()) {
+                    Text(
+                        text = formatDate(
+                            film.release_date,
+                            "yyyy-MM-dd",
+                            "dd MMM yyyy",
+                            Locale.FRANCE
+                        ),
+                        modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 0.dp),
+                        textAlign = TextAlign.Center,
+                        fontSize = 12.sp,
+                        color = Color(221, 195, 165)
+                    )
+                }
             }
 
         }
