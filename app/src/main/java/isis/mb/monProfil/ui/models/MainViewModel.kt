@@ -78,6 +78,7 @@ class MainViewModel : ViewModel() {
 
 
     fun getSearchMovie(query :String){
+        //Log.v("bornard", "rechercheGetViewModel :" + query)
         viewModelScope.launch {
             MoviesSearch.value = api.SearchMovie(query = query, api_key = api_key).results
         //Log.v("bornard", "rechercheGetViewModel :" + MoviesSearch.value.size + " et query = " + query)

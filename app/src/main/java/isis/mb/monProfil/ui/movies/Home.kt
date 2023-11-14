@@ -408,10 +408,13 @@ fun ScaffoldHome( navController: NavController, classes: WindowSizeClass) {
                 queryString = newQueryString
             },
             onSearch = {
+                //Log.v("bornard", "on search :" + queryString)
                 // this is called when the user taps on the Search icon on the keyboard
                 isActive = false
                 //Toast.makeText(contextForToast, "Your query string: $queryString", Toast.LENGTH_SHORT).show()
-                if (movieScreenSelected) { //if the user is on the movie screen, search for movies
+                if (movieScreenSelected || movieSearchSelected) {
+                    //Log.v("bornard", "on movie :" + queryString)
+//if the user is on the movie screen, search for movies
                     viewmodel.getSearchMovie(queryString)
                     movieScreenSelected = false
                     movieSearchSelected = true
@@ -419,14 +422,14 @@ fun ScaffoldHome( navController: NavController, classes: WindowSizeClass) {
                     queryString = ""
                     //Log.v("bornard", "recherche :" + searchMovies.value.size)
                 }
-                if (tvScreenSelected) { //if the user is on the tv screen, search for tv
+                if (tvScreenSelected || tvSearchSelected) { //if the user is on the tv screen, search for tv
                     viewmodel.getSearchTv(queryString)
                     tvScreenSelected = false
                     tvSearchSelected = true
                     isSearchBarActive = false
                     queryString = ""
                 }
-                if (actorScreenSelected) { // if the user is on the actor screen, search for actors
+                if (actorScreenSelected || personSearchSelected) { // if the user is on the actor screen, search for actors
                     viewmodel.getSearchPerson(queryString)
                     actorScreenSelected = false
                     personSearchSelected = true
